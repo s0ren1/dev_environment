@@ -1,0 +1,18 @@
+FROM ubuntu:latest as setup
+RUN apt-get update && apt-get install -y vim zsh wget dos2unix git curl
+RUN apt update && apt upgrade -y && apt install zsh -y
+
+FROM setup as starship
+RUN wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O - | zsh || true && \
+    curl -fsSL https://starship.rs/install.sh | sh -s -- -y 
+    
+COPY .zshrc /root/.zshrc
+COPY starship.toml /root/starship.toml
+
+RUN dos2unix /root/.zshrc && \
+    dos2unix  /root/starship.toml
+
+ENV STARSHIP_CONFIG=/root/starship.toml
+
+FROM starship as dev
+WORKDIR /workspaces/dev_environment
