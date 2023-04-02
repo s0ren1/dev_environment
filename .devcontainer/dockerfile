@@ -14,5 +14,11 @@ RUN dos2unix /root/.zshrc && \
 
 ENV STARSHIP_CONFIG=/root/starship.toml
 
-FROM starship as dev
+FROM starship as kind
+
+RUN curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.18.0/kind-linux-amd64 && \
+    chmod +x ./kind && \
+    mv ./kind /usr/local/bin/kind
+
+FROM kind as dev
 WORKDIR /workspaces/dev_environment
