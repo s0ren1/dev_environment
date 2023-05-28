@@ -1,0 +1,13 @@
+FROM golang:1.8 as build
+
+WORKDIR /go/src/github.com/codeship/go-hello-world
+
+COPY --link hello-world.go  .
+RUN go build -o hello-world .
+
+
+FROM alpine:latest as app
+
+COPY --from=build --link /go/src/github.com/codeship/go-hello-world/hello-world /bin
+
+CMD hello-world
